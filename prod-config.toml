@@ -1,0 +1,17 @@
+
+db_url          = "127.0.0.1"
+db_port         = "3306"
+db_name         = "crawlers"
+db_user         = "root"
+db_passwd       = "123456"
+db_max_conn     = 40
+db_max_idle     = 30
+
+redis_url       = "127.0.0.1:6379"
+redis_pool_size = 40
+redis_db        = 10
+
+log_level       = "debug"
+log_dest        = "file" #console为终端显示 file为存入日志文件
+log_dir         = "./log"
+
