@@ -11,6 +11,9 @@ go build
 #config为配置文件切换
 ./crawlers -action="wechat" -config="dev"
 
+#2018-08-27 add
+./crawlers -action="yuqing" -config="dev"
+
 ```
 
 > model里存放着数据库文件需要运行
