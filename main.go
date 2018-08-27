@@ -70,8 +70,8 @@ func main() {
 
 	case "wechat":
 		handlers.WeiChatHandler(crawersService)
-	case "zhihu":
-
+	case "yuqing":
+		handlers.YuqingHandler(crawersService)
 	default:
 
 	}

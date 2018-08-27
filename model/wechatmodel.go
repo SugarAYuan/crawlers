@@ -19,3 +19,13 @@ type WechatData struct {
 	UpdateTime time.Time `xorm:"update_time"`
 	DeleteTime time.Time `xorm:"delete_time"`
 }
+
+type HotWords struct {
+	Id         int64     `xorm:"id"` // XORM自动自增长
+	Media      string    `xorm:"media"`
+	HotNumber  int64     `xorm:"hot_number"`
+	Heat       float64   `xorm:"heat"`
+	Word       string    `xorm:"word"`
+	TimeLine   time.Time `xorm:"time_line"`
+	CreateTime time.Time `xorm:"create_time"`
+}

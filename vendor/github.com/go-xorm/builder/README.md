@@ -1,6 +1,7 @@
 # SQL builder
 
-[![CircleCI](https://circleci.com/gh/go-xorm/builder/tree/master.svg?style=svg)](https://circleci.com/gh/go-xorm/builder/tree/master)
+[![CircleCI](https://circleci.com/gh/go-xorm/builder/tree/master.svg?style=svg)](https://circleci.com/gh/go-xorm/builder/tree/master)  [![codecov](https://codecov.io/gh/go-xorm/builder/branch/master/graph/badge.svg)](https://codecov.io/gh/go-xorm/builder)
+[![](https://goreportcard.com/badge/github.com/go-xorm/builder)](https://goreportcard.com/report/github.com/go-xorm/builder)
 
 Package builder is a lightweight and fast SQL builder for Go and XORM.
 
@@ -11,16 +12,30 @@ Make sure you have installed Go 1.1+ and then:
 # Insert
 
 ```Go
-sql, args, err := Insert(Eq{"c": 1, "d": 2}).Into("table1").ToSQL()
+sql, args, err := builder.Insert(Eq{"c": 1, "d": 2}).Into("table1").ToSQL()
 ```
 
 # Select
 
 ```Go
+// Simple Query
 sql, args, err := Select("c, d").From("table1").Where(Eq{"a": 1}).ToSQL()
-
+// With join
 sql, args, err = Select("c, d").From("table1").LeftJoin("table2", Eq{"table1.id": 1}.And(Lt{"table2.id": 3})).
 		RightJoin("table3", "table2.id = table3.tid").Where(Eq{"a": 1}).ToSQL()
+// From sub query
+sql, args, err := Select("sub.id").From(Select("c").From("table1").Where(Eq{"a": 1}), "sub").Where(Eq{"b": 1}).ToSQL()
+// From union query
+sql, args, err = Select("sub.id").From(
+	Select("id").From("table1").Where(Eq{"a": 1}).Union("all", Select("id").From("table1").Where(Eq{"a": 2})),"sub").
+	Where(Eq{"b": 1}).ToSQL()
+// With order by
+sql, args, err = Select("a", "b", "c").From("table1").Where(Eq{"f1": "v1", "f2": "v2"}).
+		OrderBy("a ASC").ToSQL()
+// With limit.
+// Be careful! You should set up specific dialect for builder before performing a query with LIMIT
+sql, args, err = Dialect(MYSQL).Select("a", "b", "c").From("table1").OrderBy("a ASC").
+		Limit(5, 10).ToSQL()
 ```
 
 # Update
@@ -33,6 +48,16 @@ sql, args, err := Update(Eq{"a": 2}).From("table1").Where(Eq{"a": 1}).ToSQL()
 
 ```Go
 sql, args, err := Delete(Eq{"a": 1}).From("table1").ToSQL()
+```
+
+# Union
+
+```Go
+sql, args, err := Select("*").From("a").Where(Eq{"status": "1"}).
+		Union("all", Select("*").From("a").Where(Eq{"status": "2"})).
+		Union("distinct", Select("*").From("a").Where(Eq{"status": "3"})).
+		Union("", Select("*").From("a").Where(Eq{"status": "4"})).
+		ToSQL()
 ```
 
 # Conditions
